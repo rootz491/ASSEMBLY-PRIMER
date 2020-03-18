@@ -1,0 +1,137 @@
+                        
+                        
+--------------------------------------------------  VIRTUAL MEMORY ORGANISTAION  --------------------------------------------------------------
+
+
+
+to compile c code properly  =>
+
+    step 1 :    getting over PERMITTION DENIED thing by using   ' chmod command '
+    step 2 :    execute code by using   ' g++ <file_name>.c -o <output_name> '  where <output_name> is name of output file.
+    step 3 :    get output by using   '  ./<output_name>  <parameters>  '
+    step 3.1 :  in order to get that syntax error, use this   ' chmod +x <file_name>.c  ' 
+   
+            GDB PART
+    
+to get process id of our code =>  ps -aux | grep <file_name>
+ls is used to list items in a directory,
+
+->  first use ' ls /proc ' to get list of all current processes as a directory in kernel.
+
+->  when we get process id from above command then by using  '  ls /proc/<id>/  '  to go to directory where it load all processes related to
+    our current meazn process running in different terminal that is, c pro0gram (in my case). 
+    
+->  there we'll find mamy directories related to our code process but our main concern will be ' maps ' file will stores all the addresses of 
+    resistors an dpointer basically :)
+   
+->  to see whats in there , all addresses use '  cat /proc/3191/maps  '  to open ou the file and view thew lsit of all things going on !
+
+
+
+
+example :  it looks like this, 
+
+        //  Show see PROCESS ID and details about our current running code
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $ps -aux | grep vuln
+kanu      3619  0.0  0.0   2272   684 pts/0    S+   14:08   0:00 ./vuln 10 20
+kanu      3621  0.0  0.0   6140   900 pts/1    S+   14:08   0:00 grep --color=auto vuln
+
+        //   /proc is directory in kernel to track the processes by their PROCESS IDs
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $ls /proc
+1     1074  1154  1301  1565  1955  2040  236   283   3282  3457  36    45   554  570  585  676  923        dma          kpagecount    self
+10    1080  1157  1307  1587  1957  2049  24    284   3283  3461  3605  46   555  571  586  677  953        driver       kpageflags    slabinfo
+1008  109   1163  1309  16    1958  2066  2410  285   3284  3483  3606  48   556  572  587  680  984        execdomains  loadavg       softirqs
+1011  1095  1175  1335  18    196   208   245   286   3285  3485  3619  49   557  573  588  681  997        fb           locks         stat
+1014  11    1178  1355  189   1960  21    2461  287   33    3489  3629  50   558  574  589  682  998        filesystems  mdstat        swaps
+102   1108  1190  1374  19    198   211   2486  2894  3304  3497  38    51   559  575  59   683  acpi       fs           meminfo       sys
+1022  1109  1196  1376  190   1982  212   25    2899  3305  3499  384   515  56   576  590  684  asound     interrupts   misc          sysrq-trigger
+103   111   1204  1382  191   1998  214   2501  29    333   35    39    53   560  577  591  687  buddyinfo  iomem        modules       sysvipc
+1039  1115  1205  1387  192   2     217   2518  3     3343  3501  4     54   561  578  594  767  bus        ioports      mounts        thread-self
+1047  1116  1212  1397  193   20    218   2533  30    3351  3512  40    548  562  579  595  785  cgroups    irq          mtrr          timer_list
+105   1118  125   14    1938  201   2285  26    31    3366  3527  41    549  563  58   6    8    cmdline    kallsyms     net           tty
+1059  112   1253  15    194   202   2294  2756  3120  34    3536  419   55   564  580  657  836  consoles   kcore        pagetypeinfo  uptime
+106   1120  1267  1543  1945  2022  23    28    3187  3402  3552  43    550  565  581  663  848  cpuinfo    keys         partitions    version
+1060  1130  1280  1545  1946  2026  2316  280   3217  342   3583  44    551  566  582  664  855  crypto     key-users    pressure      vmallocinfo
+1065  114   1291  1548  195   203   232   281   3266  3448  3595  440   552  569  583  666  856  devices    kmsg         sched_debug   vmstat
+1072  1151  13    1559  1954  204   233   282   327   3456  3596  442   553  57   584  675  9    diskstats  kpagecgroup  schedstat     zoneinfo
+
+        //  then just open our code's process directory, see whats going in there !
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $ls /proc/3619/
+attr       clear_refs       cpuset   fd       limits     mem         net        oom_score      personality  schedstat  smaps_rollup  status   timerslack_ns
+autogroup  cmdline          cwd      fdinfo   loginuid   mountinfo   ns         oom_score_adj  projid_map   sessionid  stack         syscall  uid_map
+auxv       comm             environ  gid_map  map_files  mounts      numa_maps  pagemap        root         setgroups  stat          task     wchan
+cgroup     coredump_filter  exe      io       maps       mountstats  oom_adj    patch_state    sched        smaps      statm         timers
+
+        //  there's an interesting file named as ' maps ' which keeps all the memory addresses of all engaged registers and all.
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $cat /proc/3619/maps
+55b9a1693000-55b9a1694000 r--p 00000000 00:29 114510                     /home/kanu/vuln
+55b9a1694000-55b9a1695000 r-xp 00001000 00:29 114510                     /home/kanu/vuln
+55b9a1695000-55b9a1696000 r--p 00002000 00:29 114510                     /home/kanu/vuln
+55b9a1696000-55b9a1697000 r--p 00002000 00:29 114510                     /home/kanu/vuln
+55b9a1697000-55b9a1698000 rw-p 00003000 00:29 114510                     /home/kanu/vuln
+55b9a3566000-55b9a3587000 rw-p 00000000 00:00 0                          [heap]
+7fb5638fd000-7fb563922000 r--p 00000000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563922000-7fb563a69000 r-xp 00025000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563a69000-7fb563ab2000 r--p 0016c000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563ab2000-7fb563ab3000 ---p 001b5000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563ab3000-7fb563ab6000 r--p 001b5000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563ab6000-7fb563ab9000 rw-p 001b8000 08:06 68435845                   /usr/lib/x86_64-linux-gnu/libc-2.29.so
+7fb563ab9000-7fb563abf000 rw-p 00000000 00:00 0 
+7fb563ae0000-7fb563ae1000 r--p 00000000 08:06 68435840                   /usr/lib/x86_64-linux-gnu/ld-2.29.so
+7fb563ae1000-7fb563b00000 r-xp 00001000 08:06 68435840                   /usr/lib/x86_64-linux-gnu/ld-2.29.so
+7fb563b00000-7fb563b08000 r--p 00020000 08:06 68435840                   /usr/lib/x86_64-linux-gnu/ld-2.29.so
+7fb563b08000-7fb563b09000 r--p 00027000 08:06 68435840                   /usr/lib/x86_64-linux-gnu/ld-2.29.so
+7fb563b09000-7fb563b0a000 rw-p 00028000 08:06 68435840                   /usr/lib/x86_64-linux-gnu/ld-2.29.so
+7fb563b0a000-7fb563b0b000 rw-p 00000000 00:00 0 
+7ffe8000b000-7ffe8002c000 rw-p 00000000 00:00 0                          [stack]
+7ffe80189000-7ffe8018c000 r--p 00000000 00:00 0                          [vvar]
+7ffe8018c000-7ffe8018d000 r-xp 00000000 00:00 0                          [vdso]
+┌─[kanu@ROOTZ]─[~]
+└──╼ $
+
+TIP : to get your KERNEL INFO use '  uname -a  '
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $uname -a
+Linux ROOTZ 5.2.0-2parrot1-amd64 #1 SMP Debian 5.2.9-2parrot1 (2019-08-25) x86_64 GNU/Linux
+
+
+NOTE :  to get rid of various buffer overflow attacks, they've implemented VIRTUAL_MEMORY_ADDRESS_RANDOMISATION ;
+        which means every time we run the code stack and all stuff will store at different addresses than previous one.
+        it is implemented on kernel v 2.4.0 and above.
+        
+        now to get rid of RANDOMISATION thing,
+        we musch switch off the virtual_memory_randomisation feature from kernel.
+        
+        go to  '  cat /proc/sys/kernel/randomize_va_space  '  and alter the parameter there. i.e.  1  =>  0
+        
+        to change from 1 to 0 ,  use this  '  echo  0  >  /proc/sys/kernel/randomize_va_space  ' ;
+        and now see, it will get changed from 1 to 0.
+        
+        now by changing this, not only our code process but all processes will now get load at same address.
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
