@@ -10,17 +10,17 @@ CPU resistors => general purpose , segment , instruction pointer !
                                 high memory
 
 
-stack            =>  LIFO  => store arguments passed into functions as welll as local variable in function.  goes fron high memory to low memory. 
+stack             =>  LIFO  => store arguments passed into functions as welll as local variable in function.  goes fron high memory to low memory. 
 
- unused memory  =>  stack grow here ( downwards )
+ unused memory    =>  stack grow here ( downwards )
 
-heap             => dynamic memorey =>  mallloc() to allocate momory.
+heap              => dynamic memorey =>  mallloc() to allocate momory.
 
 uninitialized data=>   .bss   =>   uninitialized dataa stores here.
 
-initialized Data  =>   .dtat  =>   any initialized data stores here.
+initialized Data  =>   .data  =>   any initialized data stores here.
 
-program code      =>  .txt    => contain actual code.
+program code      =>   .txt   =>   contain actual code.
 
 
                                 low memory
@@ -28,10 +28,10 @@ program code      =>  .txt    => contain actual code.
 -------------------------------------------------------------------------------------------------------------------------------------------------
                                 
                                 STACK
-grows down the memory
-ESP points top of the stack
-2 operations => PUSH , POP
-all about moving ESP and obviousy after popping the last top.
+-->  grows down the memory
+-->  ESP points top of the stack
+-->  2 operations => PUSH , POP
+-->  all about moving ESP and obviousy after popping the last top.
 
 
                                 
