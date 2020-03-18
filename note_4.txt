@@ -1,0 +1,171 @@
+LINUX SYSTEM CALLS
+
+    =>  " library " which the kernel exposes to get various tasks done.
+    =>  List of system calls available in       /usr/include/asm/unistd.h
+    =>  e.g.    exit(), read(), write() etc.    which you must have used extensively while programming in C.
+    =>  system calls are invoked by processes using a software interrupt  -  INT 0x80
+    
+HOW WE PASS ARGUMENTS IN SYSTEM CALLS ?
+
+    -->   We can do that using registers, generally by storing values in them and then passing to the system call.
+    -->   if any call needs more than 5 arguments then first we store them in a structure and then pass the address of that structure.
+    
+    -->   EAX       system call
+          EBX       first argument
+          ECX       second argument
+          EDX       third ardument
+          ESI       forth argument
+          WDI       fifth argument
+          
+EXAMPLE OF EXIT() in ASSEMBLY
+
+    *   callimg exit(0) to a program
+    *   function definition :   void _exit(int status);
+    
+    STEPS
+        
+        1 =>    sys call number for exit() is 1, so load EAX with 1
+                movl $1, %eax
+        
+        2 =>    " status " is lets syas "0"  -- EBX must be loaded with "0"
+                movl $0, %ebx
+        
+        3 =>    Raise thwe software interrupt  0x80
+                int $0x80
+                
+SIMPLE CODE/PROGRAM THAT JUST EXITS
+
+        .text
+        
+                .globl _start
+        
+        _start:
+                movl $1, %eax
+                movl $0, %ebx
+                int $0x80
+
+
+TO GET NUMBER CORRESPONDING TO SYSTEM CALLS, use       "    vim  usr/include/asm/unistd.h    "
+    this is path to file that contain list of all system call
+    
+
+CODE " HELLO WORLD " :
+
+    ALGO :
+    
+        =>  we will use the write() syscall to print the " Hellp world " message.
+        =>  then use exit() to gracefully exit the program.
+       
+DESCRIPTION     -->     write() syscall
+
+    ssize_t write(int fd, const void *buf, size_t count);
+    
+        =>  syscall number for write() is 4 ( store in EAX )
+        =>  FD  = 1 for STDOUT to wich the buffer writes into  ( store in EBX )
+        =>  buf = pointer to memory location containing "HELLO WORLD" string ( store in ECX )
+        =>  count = string length   ( store in EDX )
+        
+CODE SNAPPIT -
+            
+.data          #    <-- this part contain all declarations of any type ( variables )
+
+helloworldstring:                   #   <-- label that we pass to register
+        .ascii "HELLO WORLD\n"      #   <-- buffer that countaing string 
+
+.text          #     <-- source code or instruction from here onwards
+
+        .globl _start    #   <-- declaring _start module as global so it can get loaded itself, 
+
+_start:        #     <-- it works as main() in c language,  control of execution starts from here.
+
+        #load all the arguments to write() syscall
+
+        movl $4, %eax   # system call number to write()
+        movl $1, %ebx   # define FD as stdout which is 1
+        movl $helloworldstring, %ecx    # passing buffer by it's pointer ( as label ) into the register
+        movl $13, %edx  # buffer length
+        int $0x80       # interrept syscall
+
+        # to exit the program
+
+        movl $1, %eax   # call to exit() syscall
+        movl $0, %ebx   # 0 as argument to exit() syscall
+        int $0x80       # interrept syscall
+
+
+
+HOW TO RUN THE CODE :
+
+
+
+┌─[✗]─[kanu@ROOTZ]─[~]
+└──╼ $vim helloworld.s                      <-- file that contains source code
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $as -o helloworld.o helloworld.s       <-- creating object file from source code
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $ld -o helloworld helloworld.o         <-- creating executable file from object file    [ LINKING ] 
+
+┌─[kanu@ROOTZ]─[~]
+└──╼ $./helloworld                  <--  EXECUTION OF CODE
+HELLO WORLD                         <--  output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
