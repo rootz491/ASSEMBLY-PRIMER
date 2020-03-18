@@ -1,0 +1,146 @@
+here we'll use GDB to do various things with our code  (introduction to GDB )
+
+=>  so our sample code is   '  vuln.c  ' 
+
+=>  Now, we'll execute it by using  '    gcc -ggdb -o vuln  vuln.c   ' ,   
+    here ' vuln ' is  output/executable file name and  ' vuln.c ' is source file name.
+    
+=>  we can open our code in GDB enviroment by   '  gdb < output_file_name >    ' .
+
+=>  first thing to do , we can print our code using    '    list 1  ' ,
+    here " 1 "  is no. of line to start reading from.
+    
+=>  Run the code by using '  run < parameter >   '          i.e.    run  10  20
+    parameters are only if required !  
+    
+=>  now we can actually see the assembly of hte code by using   '   disassemble < function_name >   '
+    
+    i.e.    >>>     disassemble main
+    
+                        Dump of assembler code for function main:
+                       0x0000555555555196 <+0>:	push   %rbp
+                       0x0000555555555197 <+1>:	mov    %rsp,%rbp
+                       0x000055555555519a <+4>:	add    $0xffffffffffffff80,%rsp
+                       0x000055555555519e <+8>:	mov    %edi,-0x74(%rbp)
+                       0x00005555555551a1 <+11>:	mov    %rsi,-0x80(%rbp)
+                       0x00005555555551a5 <+15>:	mov    -0x80(%rbp),%rax
+                       0x00005555555551a9 <+19>:	add    $0x8,%rax
+                       0x00005555555551ad <+23>:	mov    (%rax),%rax
+                       0x00005555555551b0 <+26>:	mov    %rax,%rdi
+                       0x00005555555551b3 <+29>:	callq  0x555555555060 <atoi@plt>
+                       0x00005555555551b8 <+34>:	mov    %eax,-0x4(%rbp)
+                       0x00005555555551bb <+37>:	mov    -0x80(%rbp),%rax
+                       0x00005555555551bf <+41>:	add    $0x10,%rax
+                       0x00005555555551c3 <+45>:	mov    (%rax),%rax
+                       0x00005555555551c6 <+48>:	mov    %rax,%rdi
+                       0x00005555555551c9 <+51>:	callq  0x555555555060 <atoi@plt>
+                       0x00005555555551ce <+56>:	mov    %eax,-0x8(%rbp)
+                       0x00005555555551d1 <+59>:	lea    -0x70(%rbp),%rax
+                       0x00005555555551d5 <+63>:	mov    %rax,%rdi
+                       0x00005555555551d8 <+66>:	mov    $0x0,%eax
+                       0x00005555555551dd <+71>:	callq  0x555555555050 <gets@plt>
+                       0x00005555555551e2 <+76>:	lea    -0x70(%rbp),%rax
+                       0x00005555555551e6 <+80>:	mov    %rax,%rdi
+                       0x00005555555551e9 <+83>:	callq  0x555555555030 <puts@plt>
+                       0x00005555555551ee <+88>:	mov    -0x8(%rbp),%edx
+                       0x00005555555551f1 <+91>:	mov    -0x4(%rbp),%eax
+                       0x00005555555551f4 <+94>:	mov    %edx,%esi
+                       0x00005555555551f6 <+96>:	mov    %eax,%edi
+                       0x00005555555551f8 <+98>:	callq  0x555555555175 <add>
+                       0x00005555555551fd <+103>:	mov    %eax,-0xc(%rbp)
+                       0x0000555555555200 <+106>:	mov    -0xc(%rbp),%ecx
+                       0x0000555555555203 <+109>:	mov    -0x8(%rbp),%edx
+                       0x0000555555555206 <+112>:	mov    -0x4(%rbp),%eax
+                    --Type <RET> for more, q to quit, c to continue without paging--
+                       0x0000555555555209 <+115>:	mov    %eax,%esi
+                       0x000055555555520b <+117>:	lea    0xdf2(%rip),%rdi        # 0x555555556004
+                       0x0000555555555212 <+124>:	mov    $0x0,%eax
+                       0x0000555555555217 <+129>:	callq  0x555555555040 <printf@plt>
+                       0x000055555555521c <+134>:	mov    $0x0,%edi
+                       0x0000555555555221 <+139>:	callq  0x555555555070 <exit@plt>
+                    End of assembler dump.
+                    
+                    
+    i.e.    >>>     disassemble add
+    
+                       Dump of assembler code for function add:
+                       0x0000555555555175 <+0>:	push   %rbp
+                       0x0000555555555176 <+1>:	mov    %rsp,%rbp
+                       0x0000555555555179 <+4>:	mov    %edi,-0x14(%rbp)
+                       0x000055555555517c <+7>:	mov    %esi,-0x18(%rbp)
+                       0x000055555555517f <+10>:	movl   $0xa,-0x4(%rbp)
+                       0x0000555555555186 <+17>:	mov    -0x14(%rbp),%edx
+                       0x0000555555555189 <+20>:	mov    -0x18(%rbp),%eax
+                       0x000055555555518c <+23>:	add    %edx,%eax
+                       0x000055555555518e <+25>:	mov    %eax,-0x4(%rbp)
+                       0x0000555555555191 <+28>:	mov    -0x4(%rbp),%eax
+                       0x0000555555555194 <+31>:	pop    %rbp
+                       0x0000555555555195 <+32>:	retq   
+                    End of assembler dump.
+                    
+    
+=>  also, we can add certain break points to see the memory behaviour till that point of the code
+    command :   '   break < line_no >   '
+    whenever we run the code ( in this frame of gdb ) it will execute normally till the break point arrives,
+*   now when we hit the break point, we can move further step by step using     '   s   ',
+*   or we can see the register at that point, using     '   info registers  ',
+    and then register info list will appear with address and some other things
+*   we can examine any particualr register using    '   x/FMT ADDRESS   '   basically this is only the syntax.
+    
+    
+    
+    
+(+)   LET'S TALK ABOUT  '   x   '   in detail.
+    
+-->    x/nfu addr
+-->    x addr
+-->    x
+    
+    so basically it is command used to examine some perticular memory location or say, ADDRESS.
+    it can ba any address i.e. address of REGISTER, lie stack pointer (esp) or instruction pointer (eip) .
+    
+    SYNTAX or HOW TO USE IT
+    
+    =>  use x command to examine memory.
+    =>  n,f,u are all optional parameters that specify how much memory to display and
+        how to format it.
+    =>  addr is an expression giving the address where you want to start displaying memory.
+    
+    DETAILS ON nfu 
+    
+    =>  n -->  the repeat count
+               the repourt count is decimal integer.
+               default value = 1
+               it specify how much memory ( counting by units ) to display.
+               if negative no. is specified, memory is examined backwards from addr.
+               
+    =>  f -->  the display format
+               there are some formats mentioned above.
+               the default is 'x'(hexadecimal).
+               
+    =>  u -->  the unit size
+               there are some formats mentioned above.
+               each time you specify a unit size it will become the default unit for next time you use x.
+               
+               
+     TIPS  =>   ' info breakpoints ' -->  points to the address of last breakpoint listed.
+                ' info line ' -->   points to the starting address of a line.
+                
+               
+    
+      
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+         
+    
+
+
+
