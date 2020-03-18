@@ -1,3 +1,6 @@
+ ------------------------------------------------------------------  BASICS OF ASSEMBLY CODE  -------------------------------------------         
+
+
 LINUX SYSTEM CALLS
 
     =>  " library " which the kernel exposes to get various tasks done.
