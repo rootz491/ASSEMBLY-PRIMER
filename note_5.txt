@@ -1,0 +1,19 @@
+data types in .DATA
+
+    .byte   =   1 byte
+    .ascii  =   string
+    .asciz  =   null terminsted string
+    .int    =   32 bit number
+    .short  =   16 bit number
+    .float  =   single precision floating point number
+    .double =   Doublr precision floating point number
+    
+    
+    -->     space reserved at compile time 
+    
+
+data types in .BSS
+
+    .comm   =   declares common memory area
+    .lcomm  =   declares local common memory area
+    

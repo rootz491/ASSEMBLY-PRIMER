@@ -64,11 +64,13 @@ DESCRIPTION     -->     write() syscall
     ssize_t write(int fd, const void *buf, size_t count);
     
         =>  syscall number for write() is 4 ( store in EAX )
-        =>  FD  = 1 for STDOUT to wich the buffer writes into  ( store in EBX )
+        =>  FD  = 1 for STDOUT to which the buffer writes into  ( store in EBX )
         =>  buf = pointer to memory location containing "HELLO WORLD" string ( store in ECX )
         =>  count = string length   ( store in EDX )
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
         
-CODE SNAPPIT -
+CODE SNEPIT -
             
 .data          #    <-- this part contain all declarations of any type ( variables )
 
@@ -95,7 +97,7 @@ _start:        #     <-- it works as main() in c language,  control of execution
         movl $0, %ebx   # 0 as argument to exit() syscall
         int $0x80       # interrept syscall
 
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 
 HOW TO RUN THE CODE :
 
